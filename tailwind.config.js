@@ -7,8 +7,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        bg: "#0a0a12",
-        panel: "#12121e",
+        bg: "#fafafa",
+        panel: "#ffffff",
       },
       fontFamily: {
         display: ["Unbounded", "sans-serif"],

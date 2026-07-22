@@ -19,9 +19,9 @@ function formatBytes(bytes) {
 
 function ProgressBar({ value }) {
   return (
-    <div className="w-full h-2.5 rounded-full bg-white/5 overflow-hidden">
+    <div className="w-full h-2.5 rounded-full bg-gray-100 overflow-hidden">
       <div
-        className="h-full rounded-full bg-gradient-to-r from-violet-500 via-blue-500 to-teal-400 transition-all duration-200"
+        className="h-full rounded-full bg-gradient-to-r from-violet-600 via-blue-500 to-teal-500 transition-all duration-200"
         style={{ width: `${value}%` }}
       />
     </div>
@@ -30,7 +30,7 @@ function ProgressBar({ value }) {
 
 function Tabs({ tab, setTab, disabled }) {
   return (
-    <div className="flex gap-2 p-1 rounded-xl bg-white/5 w-fit mx-auto mb-8">
+    <div className="flex gap-2 p-1 rounded-xl bg-gray-100 w-fit mx-auto mb-8">
       {["send", "receive"].map((t) => (
         <button
           key={t}
@@ -38,8 +38,8 @@ function Tabs({ tab, setTab, disabled }) {
           onClick={() => setTab(t)}
           className={`px-6 py-2 rounded-lg text-sm font-medium capitalize transition-all ${
             tab === t
-              ? "bg-white/10 text-white shadow-inner"
-              : "text-white/40 hover:text-white/70"
+              ? "bg-white text-gray-900 shadow-sm"
+              : "text-gray-400 hover:text-gray-600"
           } ${disabled ? "opacity-40 cursor-not-allowed" : ""}`}
         >
           {t}
@@ -107,11 +107,11 @@ export default function Home() {
 
       <header className="flex items-center gap-3 mb-2">
         <Logo size={38} />
-        <h1 className="font-display text-2xl md:text-3xl font-bold tracking-tight bg-gradient-to-r from-violet-300 via-blue-300 to-teal-300 bg-clip-text text-transparent">
+        <h1 className="font-display text-2xl md:text-3xl font-bold tracking-tight bg-gradient-to-r from-violet-600 via-blue-600 to-teal-500 bg-clip-text text-transparent">
           Warp
         </h1>
       </header>
-      <p className="text-white/40 text-sm mb-10 text-center max-w-md">
+      <p className="text-gray-500 text-sm mb-10 text-center max-w-md">
         Instant browser-to-browser file transfer. No upload, no size limit,
         no account.
       </p>
@@ -132,14 +132,14 @@ export default function Home() {
                 onClick={() => fileInputRef.current?.click()}
                 className={`cursor-pointer rounded-xl border-2 border-dashed p-10 text-center transition-colors ${
                   dragOver
-                    ? "border-teal-400 bg-teal-400/5"
-                    : "border-white/15 hover:border-white/30"
+                    ? "border-teal-400 bg-teal-50"
+                    : "border-gray-200 hover:border-gray-300"
                 }`}
               >
-                <p className="text-white/70 font-medium mb-1">
+                <p className="text-gray-700 font-medium mb-1">
                   Drop a file here
                 </p>
-                <p className="text-white/30 text-sm">or click to browse</p>
+                <p className="text-gray-400 text-sm">or click to browse</p>
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -151,24 +151,24 @@ export default function Home() {
 
             {status === "waiting" && (
               <div className="text-center">
-                <p className="text-white/50 text-sm mb-3">Share this code</p>
-                <div className="code-char text-4xl font-bold tracking-widest bg-gradient-to-r from-violet-300 to-teal-300 bg-clip-text text-transparent mb-4">
+                <p className="text-gray-500 text-sm mb-3">Share this code</p>
+                <div className="code-char text-4xl font-bold tracking-widest bg-gradient-to-r from-violet-600 to-teal-500 bg-clip-text text-transparent mb-4">
                   {code}
                 </div>
                 <button
                   onClick={copyCode}
-                  className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-sm mb-5 transition-colors"
+                  className="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm mb-5 transition-colors"
                 >
                   {copied ? "Copied ✓" : "Copy code"}
                 </button>
-                <p className="text-white/30 text-xs mb-6">
+                <p className="text-gray-400 text-xs mb-6">
                   Waiting for the receiver to connect…
                 </p>
-                <p className="text-yellow-200/40 text-xs mb-2">
+                <p className="text-amber-600/70 text-xs mb-2">
                   Keep this tab open and in view — switching apps can drop
                   the connection on some phones.
                 </p>
-                <div className="animate-pulse text-white/20 text-xs">
+                <div className="animate-pulse text-gray-400 text-xs">
                   {reconnecting ? "● reconnecting…" : "● listening"}
                 </div>
               </div>
@@ -176,25 +176,25 @@ export default function Home() {
 
             {(status === "connected" || status === "transferring") && (
               <div>
-                <p className="text-white/50 text-sm mb-3 truncate">
+                <p className="text-gray-500 text-sm mb-3 truncate">
                   Sending {fileMeta?.name || ""}
                 </p>
                 <ProgressBar value={progress} />
-                <p className="text-white/30 text-xs mt-2">{progress}%</p>
+                <p className="text-gray-400 text-xs mt-2">{progress}%</p>
               </div>
             )}
 
             {status === "done" && (
               <div className="text-center">
-                <p className="text-teal-300 font-medium mb-1">
+                <p className="text-teal-600 font-medium mb-1">
                   Transfer complete ✓
                 </p>
-                <p className="text-white/30 text-xs mb-5">
+                <p className="text-gray-400 text-xs mb-5">
                   File delivered successfully
                 </p>
                 <button
                   onClick={reset}
-                  className="px-5 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-sm transition-colors"
+                  className="px-5 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm transition-colors"
                 >
                   Send another file
                 </button>
@@ -203,13 +203,13 @@ export default function Home() {
 
             {status === "error" && (
               <div className="text-center">
-                <p className="text-red-300 font-medium mb-1">
+                <p className="text-red-500 font-medium mb-1">
                   Something went wrong
                 </p>
-                <p className="text-white/30 text-xs mb-5">{errorMsg}</p>
+                <p className="text-gray-400 text-xs mb-5">{errorMsg}</p>
                 <button
                   onClick={reset}
-                  className="px-5 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-sm transition-colors"
+                  className="px-5 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm transition-colors"
                 >
                   Try again
                 </button>
@@ -222,7 +222,7 @@ export default function Home() {
           <>
             {status === "idle" && (
               <div>
-                <p className="text-white/50 text-sm mb-3 text-center">
+                <p className="text-gray-500 text-sm mb-3 text-center">
                   Enter the code you were given
                 </p>
                 <input
@@ -230,12 +230,12 @@ export default function Home() {
                   onChange={(e) => setInputCode(e.target.value)}
                   placeholder="e.g. h4k9zq"
                   maxLength={6}
-                  className="code-char w-full text-center text-2xl tracking-widest bg-white/5 border border-white/10 rounded-xl py-3 mb-4 outline-none focus:border-teal-400/50 transition-colors"
+                  className="code-char w-full text-center text-2xl tracking-widest bg-gray-50 border border-gray-200 rounded-xl py-3 mb-4 outline-none focus:border-teal-400 text-gray-900 transition-colors"
                 />
                 <button
                   disabled={inputCode.trim().length < 4}
                   onClick={() => startReceiving(inputCode)}
-                  className="w-full py-3 rounded-xl bg-gradient-to-r from-violet-500 to-teal-400 font-medium disabled:opacity-30 disabled:cursor-not-allowed transition-opacity"
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-violet-600 to-teal-500 text-white font-medium disabled:opacity-30 disabled:cursor-not-allowed transition-opacity"
                 >
                   Connect
                 </button>
@@ -243,39 +243,39 @@ export default function Home() {
             )}
 
             {status === "connecting" && (
-              <p className="text-white/40 text-sm text-center animate-pulse">
+              <p className="text-gray-500 text-sm text-center animate-pulse">
                 {reconnecting ? "Reconnecting…" : "Connecting…"}
               </p>
             )}
 
             {(status === "connected" || status === "transferring") && (
               <div>
-                <p className="text-white/50 text-sm mb-3 truncate">
+                <p className="text-gray-500 text-sm mb-3 truncate">
                   Receiving {fileMeta?.name || "file"}{" "}
                   {fileMeta?.size ? `(${formatBytes(fileMeta.size)})` : ""}
                 </p>
                 <ProgressBar value={progress} />
-                <p className="text-white/30 text-xs mt-2">{progress}%</p>
+                <p className="text-gray-400 text-xs mt-2">{progress}%</p>
               </div>
             )}
 
             {status === "done" && (
               <div className="text-center">
-                <p className="text-teal-300 font-medium mb-1">Ready ✓</p>
-                <p className="text-white/30 text-xs mb-5 truncate">
+                <p className="text-teal-600 font-medium mb-1">Ready ✓</p>
+                <p className="text-gray-400 text-xs mb-5 truncate">
                   {receivedName}
                 </p>
                 <a
                   href={receivedUrl}
                   download={receivedName}
-                  className="inline-block px-5 py-2 rounded-lg bg-gradient-to-r from-violet-500 to-teal-400 text-sm font-medium mb-3"
+                  className="inline-block px-5 py-2 rounded-lg bg-gradient-to-r from-violet-600 to-teal-500 text-white text-sm font-medium mb-3"
                 >
                   Download file
                 </a>
                 <br />
                 <button
                   onClick={reset}
-                  className="text-white/40 hover:text-white/70 text-xs transition-colors"
+                  className="text-gray-400 hover:text-gray-600 text-xs transition-colors"
                 >
                   Receive another
                 </button>
@@ -284,17 +284,17 @@ export default function Home() {
 
             {status === "error" && (
               <div className="text-center">
-                <p className="text-red-300 font-medium mb-1">
+                <p className="text-red-500 font-medium mb-1">
                   Couldn't connect
                 </p>
-                <p className="text-white/30 text-xs mb-2">{errorMsg}</p>
-                <p className="text-white/25 text-xs mb-5">
+                <p className="text-gray-400 text-xs mb-2">{errorMsg}</p>
+                <p className="text-gray-400 text-xs mb-5">
                   Make sure the sender's tab is still open and in the
                   foreground, and the code was typed correctly.
                 </p>
                 <button
                   onClick={reset}
-                  className="px-5 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-sm transition-colors"
+                  className="px-5 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm transition-colors"
                 >
                   Try again
                 </button>
@@ -304,21 +304,31 @@ export default function Home() {
         )}
       </div>
 
-      <p className="text-white/25 text-xs mt-4 max-w-sm text-center">
+      <p className="text-gray-400 text-xs mt-4 max-w-sm text-center">
         Files transfer directly between browsers over an encrypted
         connection — nothing is stored on a server. Keep both tabs open
         until the transfer finishes.
       </p>
 
-      <footer className="mt-16 text-white/25 text-xs">
-        Built by{" "}
+      <footer className="mt-16 text-gray-400 text-xs flex items-center gap-4">
+        <span>
+          Built by{" "}
+          <a
+            href="https://asad-lee-portfolio.vercel.app"
+            className="text-gray-600 hover:text-gray-900 transition-colors"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Asad Lee
+          </a>
+        </span>
         <a
-          href="https://asad-lee-portfolio.vercel.app"
-          className="text-white/50 hover:text-white/80 transition-colors"
+          href="https://www.instagram.com/asadleeafridi?igsh=bDRmMGd1c3o1NzBl&utm_source=qr"
           target="_blank"
           rel="noreferrer"
+          className="text-gray-600 hover:text-gray-900 transition-colors"
         >
-          Asad Lee
+          Instagram
         </a>
       </footer>
     </main>
