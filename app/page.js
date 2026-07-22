@@ -65,6 +65,7 @@ export default function Home() {
     errorMsg,
     receivedUrl,
     receivedName,
+    reconnecting,
     startSending,
     startReceiving,
     reset,
@@ -168,7 +169,7 @@ export default function Home() {
                   the connection on some phones.
                 </p>
                 <div className="animate-pulse text-white/20 text-xs">
-                  ● listening
+                  {reconnecting ? "● reconnecting…" : "● listening"}
                 </div>
               </div>
             )}
@@ -243,7 +244,7 @@ export default function Home() {
 
             {status === "connecting" && (
               <p className="text-white/40 text-sm text-center animate-pulse">
-                Connecting…
+                {reconnecting ? "Reconnecting…" : "Connecting…"}
               </p>
             )}
 
