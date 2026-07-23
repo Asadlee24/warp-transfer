@@ -285,11 +285,11 @@ export default function Home() {
             {status === "error" && (
               <div className="text-center">
                 <p className="text-red-500 font-medium mb-1">
-                  Couldn't connect
+                  Couldn&apos;t connect
                 </p>
                 <p className="text-gray-400 text-xs mb-2">{errorMsg}</p>
                 <p className="text-gray-400 text-xs mb-5">
-                  Make sure the sender's tab is still open and in the
+                  Make sure the sender&apos;s tab is still open and in the
                   foreground, and the code was typed correctly.
                 </p>
                 <button

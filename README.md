@@ -38,14 +38,25 @@ it works out of the box.
 
 ## Notes / limits
 
-- Works on desktop and mobile browsers (Chrome, Safari, Firefox).
-- On mobile data (4G/5G), carrier-grade NAT can occasionally block the
-  direct connection — for higher reliability add a TURN server (e.g. a
-  free Metered.ca or Twilio TURN endpoint) to the PeerJS config in
-  `lib/useTransfer.js`.
+- Works on desktop and mobile browsers (Chrome, Safari, Firefox, Edge).
+- Includes STUN + a free public TURN fallback (Open Relay), so transfers can
+  work across restrictive networks (mobile data, corporate Wi-Fi), not just
+  same-network. For heavy production use, swap Open Relay for a paid TURN
+  provider (Twilio, Metered) — it's rate-limited.
+- A ping/pong heartbeat runs once connected to detect a truly dead connection
+  vs. a temporary signaling blip.
+- Set `NEXT_PUBLIC_WARP_DEBUG=1` as an env var to get verbose console logging
+  of signaling, ICE, and DataChannel events while debugging.
 - Current build buffers the file in memory while receiving, so it's best
   suited for files up to a few hundred MB on mobile, and multi-GB on
   desktop. For guaranteed large-file support, swap the receive-side buffer
   for the File System Access API's streaming writer.
-- Keep both browser tabs open and the screen on during transfer — mobile
-  browsers throttle background tabs.
+- **iOS/Android background tab limitation (by design, not a bug):** mobile
+  browsers suspend a tab's JavaScript almost immediately after it leaves the
+  foreground (screen off, app-switch, etc). No web app — this one included —
+  can fully override that OS policy. The app auto-reconnects the signaling
+  connection when a tab returns to the foreground, and an already-established
+  DataChannel transfer keeps running even if signaling drops, but a transfer
+  cannot make progress while its own tab is actually backgrounded. For
+  reliable testing, use two separate devices, or two tabs within the same
+  browser app rather than switching between two different apps on one phone.
