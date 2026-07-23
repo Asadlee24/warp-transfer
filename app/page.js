@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import AuroraBackground from "@/components/AuroraBackground";
 import Logo from "@/components/Logo";
+import QrScanner from "@/components/QrScanner";
 import { useTransfer } from "@/lib/useTransfer";
 import { getMuted, setMuted as persistMuted } from "@/lib/sounds";
 
@@ -110,6 +111,7 @@ export default function Home() {
   const [inputCode, setInputCode] = useState("");
   const [copied, setCopied] = useState(false);
   const [siteOrigin, setSiteOrigin] = useState("");
+  const [scannerOpen, setScannerOpen] = useState(false);
   const fileInputRef = useRef(null);
   const autoConnectedRef = useRef(false);
 
@@ -171,6 +173,15 @@ export default function Home() {
       // clipboard API unavailable — ignore silently
     }
   }, [code]);
+
+  const handleScanResult = useCallback(
+    (scannedCode) => {
+      setScannerOpen(false);
+      setInputCode(scannedCode);
+      startReceiving(scannedCode);
+    },
+    [startReceiving]
+  );
 
   const shareUrl = siteOrigin && code ? `${siteOrigin}/?code=${code}` : "";
   const qrUrl = shareUrl
@@ -339,6 +350,12 @@ export default function Home() {
                 >
                   Connect
                 </button>
+                <button
+                  onClick={() => setScannerOpen(true)}
+                  className="w-full py-2.5 mt-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium transition-colors"
+                >
+                  📷 Scan QR code instead
+                </button>
               </div>
             )}
 
@@ -435,6 +452,13 @@ export default function Home() {
           Instagram
         </a>
       </footer>
+
+      {scannerOpen && (
+        <QrScanner
+          onResult={handleScanResult}
+          onClose={() => setScannerOpen(false)}
+        />
+      )}
     </main>
   );
 }
