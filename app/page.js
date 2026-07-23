@@ -122,8 +122,7 @@ export default function Home() {
     progress,
     fileMeta,
     errorMsg,
-    receivedUrl,
-    receivedName,
+    receivedFiles,
     reconnecting,
     speedBps,
     etaSeconds,
@@ -144,10 +143,11 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleFile = useCallback(
-    (file) => {
-      if (!file) return;
-      startSending(file);
+  const handleFiles = useCallback(
+    (fileList) => {
+      const files = Array.from(fileList || []);
+      if (!files.length) return;
+      startSending(files);
     },
     [startSending]
   );
@@ -156,10 +156,9 @@ export default function Home() {
     (e) => {
       e.preventDefault();
       setDragOver(false);
-      const file = e.dataTransfer.files?.[0];
-      handleFile(file);
+      handleFiles(e.dataTransfer.files);
     },
-    [handleFile]
+    [handleFiles]
   );
 
   const busy = status !== "idle";
@@ -227,14 +226,15 @@ export default function Home() {
                 }`}
               >
                 <p className="text-gray-700 font-medium mb-1">
-                  Drop a file here
+                  Drop files here
                 </p>
-                <p className="text-gray-400 text-sm">or click to browse</p>
+                <p className="text-gray-400 text-sm">or click to browse (multiple files supported)</p>
                 <input
                   ref={fileInputRef}
                   type="file"
+                  multiple
                   className="hidden"
-                  onChange={(e) => handleFile(e.target.files?.[0])}
+                  onChange={(e) => handleFiles(e.target.files)}
                 />
               </div>
             )}
@@ -283,9 +283,14 @@ export default function Home() {
 
             {(status === "connected" || status === "transferring") && (
               <div>
-                <p className="text-gray-500 text-sm mb-3 truncate">
+                <p className="text-gray-500 text-sm mb-1 truncate">
                   Sending {fileMeta?.name || ""}
                 </p>
+                {fileMeta?.total > 1 && (
+                  <p className="text-gray-400 text-xs mb-2">
+                    File {fileMeta.index + 1} of {fileMeta.total}
+                  </p>
+                )}
                 <ProgressBar value={progress} />
                 <TransferStats
                   progress={progress}
@@ -301,13 +306,15 @@ export default function Home() {
                   Transfer complete ✓
                 </p>
                 <p className="text-gray-400 text-xs mb-5">
-                  File delivered successfully
+                  {fileMeta?.total > 1
+                    ? `${fileMeta.total} files delivered successfully`
+                    : "File delivered successfully"}
                 </p>
                 <button
                   onClick={reset}
                   className="px-5 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm transition-colors"
                 >
-                  Send another file
+                  Send more files
                 </button>
               </div>
             )}
@@ -367,10 +374,15 @@ export default function Home() {
 
             {(status === "connected" || status === "transferring") && (
               <div>
-                <p className="text-gray-500 text-sm mb-3 truncate">
+                <p className="text-gray-500 text-sm mb-1 truncate">
                   Receiving {fileMeta?.name || "file"}{" "}
                   {fileMeta?.size ? `(${formatBytes(fileMeta.size)})` : ""}
                 </p>
+                {fileMeta?.total > 1 && (
+                  <p className="text-gray-400 text-xs mb-2">
+                    File {fileMeta.index + 1} of {fileMeta.total}
+                  </p>
+                )}
                 <ProgressBar value={progress} />
                 <TransferStats
                   progress={progress}
@@ -383,22 +395,31 @@ export default function Home() {
             {status === "done" && (
               <div className="text-center">
                 <p className="text-teal-600 font-medium mb-1">Ready ✓</p>
-                <p className="text-gray-400 text-xs mb-5 truncate">
-                  {receivedName}
+                <p className="text-gray-400 text-xs mb-4">
+                  {receivedFiles.length > 1
+                    ? `${receivedFiles.length} files received`
+                    : "1 file received"}
                 </p>
-                <a
-                  href={receivedUrl}
-                  download={receivedName}
-                  className="inline-block px-5 py-2 rounded-lg bg-gradient-to-r from-violet-600 to-teal-500 text-white text-sm font-medium mb-3"
-                >
-                  Download file
-                </a>
-                <br />
+                <div className="flex flex-col gap-2 mb-4">
+                  {receivedFiles.map((f, i) => (
+                    <a
+                      key={i}
+                      href={f.url}
+                      download={f.name}
+                      className="flex items-center justify-between gap-3 px-4 py-2.5 rounded-lg bg-gray-50 border border-gray-200 hover:border-teal-400 transition-colors text-left"
+                    >
+                      <span className="text-gray-700 text-sm truncate">{f.name}</span>
+                      <span className="text-gray-400 text-xs whitespace-nowrap">
+                        {formatBytes(f.size)} · Download
+                      </span>
+                    </a>
+                  ))}
+                </div>
                 <button
                   onClick={reset}
                   className="text-gray-400 hover:text-gray-600 text-xs transition-colors"
                 >
-                  Receive another
+                  Receive more files
                 </button>
               </div>
             )}

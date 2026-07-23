@@ -9,12 +9,12 @@ web app so it can run entirely in the browser and deploy on Vercel.
 
 ## How it works
 
-1. Sender picks a file → gets a short 6-character code.
-2. Receiver types the code in.
+1. Sender picks one or more files → gets a short 6-character code.
+2. Receiver types the code in (or scans the sender's QR code with their camera).
 3. Both browsers connect directly via WebRTC (using PeerJS's free public
    signaling broker just to introduce the two peers).
-4. The file streams directly between the two browsers in 64KB chunks —
-   it never touches any server.
+4. Files stream directly between the two browsers, one after another, in
+   128KB chunks — they never touch any server.
 
 ## Run locally
 
