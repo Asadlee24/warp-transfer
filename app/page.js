@@ -182,6 +182,19 @@ export default function Home() {
     [startReceiving]
   );
 
+  const downloadAll = useCallback((files) => {
+    files.forEach((f, i) => {
+      setTimeout(() => {
+        const a = document.createElement("a");
+        a.href = f.url;
+        a.download = f.name;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      }, i * 400); // stagger so the browser doesn't block back-to-back downloads
+    });
+  }, []);
+
   const shareUrl = siteOrigin && code ? `${siteOrigin}/?code=${code}` : "";
   const qrUrl = shareUrl
     ? `https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=8&data=${encodeURIComponent(
@@ -400,6 +413,16 @@ export default function Home() {
                     ? `${receivedFiles.length} files received`
                     : "1 file received"}
                 </p>
+
+                {receivedFiles.length > 1 && (
+                  <button
+                    onClick={() => downloadAll(receivedFiles)}
+                    className="w-full py-2.5 mb-3 rounded-xl bg-gradient-to-r from-violet-600 to-teal-500 text-white text-sm font-medium"
+                  >
+                    Download all ({receivedFiles.length})
+                  </button>
+                )}
+
                 <div className="flex flex-col gap-2 mb-4">
                   {receivedFiles.map((f, i) => (
                     <a
