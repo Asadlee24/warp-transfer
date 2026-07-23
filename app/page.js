@@ -1,9 +1,11 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import AuroraBackground from "@/components/AuroraBackground";
 import Logo from "@/components/Logo";
 import { useTransfer } from "@/lib/useTransfer";
+import { getMuted, setMuted as persistMuted } from "@/lib/sounds";
 
 function formatBytes(bytes) {
   if (!bytes) return "0 B";
@@ -17,6 +19,20 @@ function formatBytes(bytes) {
   return `${val.toFixed(val < 10 && i > 0 ? 1 : 0)} ${units[i]}`;
 }
 
+function formatSpeed(bytesPerSec) {
+  if (!bytesPerSec || bytesPerSec < 1) return "";
+  return `${formatBytes(bytesPerSec)}/s`;
+}
+
+function formatEta(seconds) {
+  if (seconds === null || seconds === undefined) return "";
+  if (seconds <= 0) return "almost done";
+  if (seconds < 60) return `${seconds}s left`;
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m}m ${s}s left`;
+}
+
 function ProgressBar({ value }) {
   return (
     <div className="w-full h-2.5 rounded-full bg-gray-100 overflow-hidden">
@@ -24,6 +40,21 @@ function ProgressBar({ value }) {
         className="h-full rounded-full bg-gradient-to-r from-violet-600 via-blue-500 to-teal-500 transition-all duration-200"
         style={{ width: `${value}%` }}
       />
+    </div>
+  );
+}
+
+function TransferStats({ progress, speedBps, etaSeconds }) {
+  const speed = formatSpeed(speedBps);
+  const eta = formatEta(etaSeconds);
+  return (
+    <div className="flex items-center justify-between text-gray-400 text-xs mt-2">
+      <span>{progress}%</span>
+      <span>
+        {speed}
+        {speed && eta ? " · " : ""}
+        {eta}
+      </span>
     </div>
   );
 }
@@ -49,12 +80,38 @@ function Tabs({ tab, setTab, disabled }) {
   );
 }
 
+function MuteToggle() {
+  const [muted, setMutedState] = useState(false);
+
+  useEffect(() => {
+    setMutedState(getMuted());
+  }, []);
+
+  const toggle = () => {
+    const next = !muted;
+    setMutedState(next);
+    persistMuted(next);
+  };
+
+  return (
+    <button
+      onClick={toggle}
+      aria-label={muted ? "Unmute sounds" : "Mute sounds"}
+      className="fixed top-5 right-5 w-9 h-9 rounded-full bg-white/80 border border-gray-200 shadow-sm flex items-center justify-center text-gray-500 hover:text-gray-800 transition-colors z-10"
+    >
+      {muted ? "🔇" : "🔊"}
+    </button>
+  );
+}
+
 export default function Home() {
   const [tab, setTab] = useState("send");
   const [dragOver, setDragOver] = useState(false);
   const [inputCode, setInputCode] = useState("");
   const [copied, setCopied] = useState(false);
+  const [siteOrigin, setSiteOrigin] = useState("");
   const fileInputRef = useRef(null);
+  const autoConnectedRef = useRef(false);
 
   const {
     status,
@@ -66,10 +123,24 @@ export default function Home() {
     receivedUrl,
     receivedName,
     reconnecting,
+    speedBps,
+    etaSeconds,
     startSending,
     startReceiving,
     reset,
   } = useTransfer();
+
+  useEffect(() => {
+    setSiteOrigin(window.location.origin);
+    const params = new URLSearchParams(window.location.search);
+    const codeFromLink = params.get("code");
+    if (codeFromLink && !autoConnectedRef.current) {
+      autoConnectedRef.current = true;
+      setTab("receive");
+      setInputCode(codeFromLink);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleFile = useCallback(
     (file) => {
@@ -101,9 +172,17 @@ export default function Home() {
     }
   }, [code]);
 
+  const shareUrl = siteOrigin && code ? `${siteOrigin}/?code=${code}` : "";
+  const qrUrl = shareUrl
+    ? `https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=8&data=${encodeURIComponent(
+        shareUrl
+      )}`
+    : "";
+
   return (
     <main className="relative min-h-screen flex flex-col items-center px-4 py-14">
       <AuroraBackground />
+      <MuteToggle />
 
       <header className="flex items-center gap-3 mb-2">
         <Logo size={38} />
@@ -161,6 +240,23 @@ export default function Home() {
                 >
                   {copied ? "Copied ✓" : "Copy code"}
                 </button>
+
+                {qrUrl && (
+                  <div className="flex flex-col items-center mb-5">
+                    <Image
+                      src={qrUrl}
+                      alt="QR code to open the receive link"
+                      width={140}
+                      height={140}
+                      unoptimized
+                      className="rounded-lg border border-gray-200"
+                    />
+                    <p className="text-gray-400 text-xs mt-2">
+                      Scan on the other device to auto-fill the code
+                    </p>
+                  </div>
+                )}
+
                 <p className="text-gray-400 text-xs mb-6">
                   Waiting for the receiver to connect…
                 </p>
@@ -180,7 +276,11 @@ export default function Home() {
                   Sending {fileMeta?.name || ""}
                 </p>
                 <ProgressBar value={progress} />
-                <p className="text-gray-400 text-xs mt-2">{progress}%</p>
+                <TransferStats
+                  progress={progress}
+                  speedBps={speedBps}
+                  etaSeconds={etaSeconds}
+                />
               </div>
             )}
 
@@ -255,7 +355,11 @@ export default function Home() {
                   {fileMeta?.size ? `(${formatBytes(fileMeta.size)})` : ""}
                 </p>
                 <ProgressBar value={progress} />
-                <p className="text-gray-400 text-xs mt-2">{progress}%</p>
+                <TransferStats
+                  progress={progress}
+                  speedBps={speedBps}
+                  etaSeconds={etaSeconds}
+                />
               </div>
             )}
 
