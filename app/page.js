@@ -157,7 +157,6 @@ export default function Home() {
     reconnecting,
     speedBps,
     etaSeconds,
-    receiverCount,
     startSending,
     startReceiving,
     reset,
@@ -279,7 +278,7 @@ export default function Home() {
             </h1>
           </div>
           <p className="text-stone-400 text-sm md:text-base max-w-md font-medium">
-            Multi-Receiver P2P Transfer. Encrypted, direct stream, zero servers.
+            Ultra-fast browser-to-browser P2P file portal. Encrypted, zero servers, infinite size.
           </p>
         </header>
 
@@ -308,20 +307,7 @@ export default function Home() {
         {/* 3D Glassmorphism Interactive Card */}
         <TiltCard3D className="w-full p-6 md:p-8">
           {/* Realtime P2P Node Link Diagram */}
-          <NodeP2PGraph3D role={role || tab} status={status} speedBps={speedBps} receiverCount={receiverCount} />
-
-          {/* Multi-Receiver Badge */}
-          {role === "send" && receiverCount > 0 && (
-            <div className="mb-4 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/40 text-amber-300 text-xs font-semibold flex items-center justify-between shadow-inner">
-              <span className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
-                Multi-Receiver Stream Active
-              </span>
-              <span className="bg-amber-500 text-black px-2 py-0.5 rounded-md font-extrabold text-[11px]">
-                {receiverCount} Device{receiverCount > 1 ? "s" : ""} Connected
-              </span>
-            </div>
-          )}
+          <NodeP2PGraph3D role={role || tab} status={status} speedBps={speedBps} />
 
           {/* Status Banner */}
           {statusText && (
@@ -418,7 +404,7 @@ export default function Home() {
                           <line x1="22" y1="2" x2="11" y2="13" />
                           <polygon points="22 2 15 22 11 13 2 9 22 2" />
                         </svg>
-                        Start Multi-Receiver Transfer
+                        Initialize P2P Warp Stream
                       </button>
                     </div>
                   )}
@@ -428,7 +414,7 @@ export default function Home() {
               {status === "waiting" && (
                 <div className="text-center py-4 flex flex-col items-center">
                   <p className="text-stone-400 text-xs uppercase tracking-widest font-semibold mb-2">
-                    Pairing Code (Share with multiple devices)
+                    Pairing Code
                   </p>
                   <div className="code-char text-5xl md:text-6xl font-extrabold tracking-widest bg-gradient-to-r from-amber-400 via-rose-400 to-orange-400 bg-clip-text text-transparent glow-text-amber my-3">
                     {code}
@@ -439,7 +425,7 @@ export default function Home() {
                       onClick={copyCode}
                       className="px-5 py-2.5 rounded-xl bg-stone-800 hover:bg-stone-700 border border-stone-700 text-stone-200 text-xs font-bold transition-all shadow-md"
                     >
-                      {copied ? "Copied" : "Copy Code"}
+                      {copied ? "Copied Code ✓" : "Copy Code"}
                     </button>
                     <button
                       onClick={copyShareLink}
@@ -449,7 +435,7 @@ export default function Home() {
                         <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
                         <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
                       </svg>
-                      Copy Link
+                      Copy Direct Link
                     </button>
                   </div>
 
@@ -464,14 +450,14 @@ export default function Home() {
                         className="rounded-xl border border-stone-700"
                       />
                       <p className="text-stone-400 text-[11px] mt-2.5 font-medium">
-                        Multiple devices can scan & download simultaneously
+                        Scan with camera to auto-connect mobile browser
                       </p>
                     </div>
                   )}
 
                   <div className="flex items-center gap-2 text-stone-400 text-xs animate-pulse font-medium">
                     <span className="w-2 h-2 rounded-full bg-amber-400" />
-                    {reconnecting ? "Re-establishing signal..." : "Listening for incoming receivers..."}
+                    {reconnecting ? "Re-establishing signal..." : "Listening for incoming receiver..."}
                   </div>
                 </div>
               )}
@@ -479,7 +465,7 @@ export default function Home() {
               {(status === "connected" || status === "transferring") && (
                 <div className="flex flex-col items-center">
                   <p className="text-stone-300 font-bold text-sm text-center truncate max-w-xs mb-1">
-                    Streaming {fileMeta?.name || "Files"}
+                    Sending {fileMeta?.name || "Files"}
                   </p>
                   {fileMeta?.total > 1 && (
                     <span className="text-stone-400 text-xs font-medium">
@@ -502,10 +488,10 @@ export default function Home() {
                     </svg>
                   </div>
                   <h3 className="text-amber-400 font-bold text-xl mb-1">
-                    Multi-Stream Delivered!
+                    Transfer Completed!
                   </h3>
                   <p className="text-stone-400 text-xs mb-6">
-                    All files delivered directly to connected devices over encrypted P2P stream.
+                    All files delivered directly over encrypted P2P stream.
                   </p>
                   <button
                     onClick={() => {
@@ -703,7 +689,7 @@ export default function Home() {
             <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
             <path d="M7 11V7a5 5 0 0 1 10 0v4" />
           </svg>
-          Direct Encrypted Multi-WebRTC — No Server Storage
+          Direct Encrypted WebRTC Stream — No Server Storage
         </span>
         <span className="hidden sm:inline">·</span>
         <span>

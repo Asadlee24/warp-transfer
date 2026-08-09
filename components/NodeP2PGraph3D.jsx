@@ -1,6 +1,6 @@
 "use client";
 
-export default function NodeP2PGraph3D({ role = "send", status = "idle", speedBps = 0, receiverCount = 0 }) {
+export default function NodeP2PGraph3D({ role = "send", status = "idle", speedBps = 0 }) {
   const isTransferring = status === "transferring";
   const isConnected = status === "connected" || isTransferring;
 
@@ -61,51 +61,32 @@ export default function NodeP2PGraph3D({ role = "send", status = "idle", speedBp
             }`}
           />
           {isTransferring
-            ? receiverCount > 1
-              ? `Multi-Stream (${receiverCount})`
-              : "P2P Streaming"
+            ? "P2P Streaming"
             : isConnected
-            ? receiverCount > 1
-              ? `${receiverCount} Receivers Connected`
-              : "Link Ready"
+            ? "Link Ready"
             : status === "connecting"
             ? "Connecting..."
-            : "WebRTC Multi-P2P"}
+            : "Direct WebRTC"}
         </div>
       </div>
 
-      {/* Receiver Node(s) */}
+      {/* Receiver Node */}
       <div className="flex flex-col items-center gap-1 z-10">
-        <div className="relative">
-          <div
-            className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 ${
-              role === "receive"
-                ? "bg-gradient-to-tr from-rose-600 to-pink-500 shadow-[0_0_22px_rgba(251,113,133,0.55)] scale-105 border border-rose-400"
-                : receiverCount > 0
-                ? "bg-gradient-to-tr from-rose-700 to-amber-600 border border-amber-400/60 shadow-[0_0_16px_rgba(245,158,11,0.4)]"
-                : "bg-stone-800 border border-stone-700 text-stone-400"
-            }`}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 text-white">
-              <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
-              <line x1="8" y1="21" x2="16" y2="21" />
-              <line x1="12" y1="17" x2="12" y2="21" />
-            </svg>
-          </div>
-
-          {/* Badge for multiple receivers */}
-          {receiverCount > 1 && (
-            <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-amber-500 text-black text-[10px] font-extrabold flex items-center justify-center border border-black shadow-md">
-              {receiverCount}
-            </span>
-          )}
+        <div
+          className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 ${
+            role === "receive"
+              ? "bg-gradient-to-tr from-rose-600 to-pink-500 shadow-[0_0_22px_rgba(251,113,133,0.55)] scale-105 border border-rose-400"
+              : "bg-stone-800 border border-stone-700 text-stone-400"
+          }`}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 text-white">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+            <line x1="8" y1="21" x2="16" y2="21" />
+            <line x1="12" y1="17" x2="12" y2="21" />
+          </svg>
         </div>
         <span className="text-[11px] font-medium text-stone-300">
-          {role === "receive"
-            ? "This Device"
-            : receiverCount > 1
-            ? `${receiverCount} Receivers`
-            : "Receiver Node"}
+          {role === "receive" ? "This Device" : "Receiver Node"}
         </span>
       </div>
     </div>
