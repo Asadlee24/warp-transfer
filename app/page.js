@@ -45,19 +45,19 @@ function GlowingCircularProgress({ value, speedBps, etaSeconds }) {
     <div className="relative flex flex-col items-center justify-center my-6">
       <div className="relative w-44 h-44 flex items-center justify-center">
         {/* Ambient Glowing Aura */}
-        <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-violet-600/30 via-cyan-400/30 to-emerald-400/30 blur-xl animate-pulse-glow" />
+        <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-amber-500/25 via-rose-400/20 to-orange-400/20 blur-xl animate-pulse-glow" />
 
-        <svg className="w-full h-full transform -rotate-90 drop-shadow-[0_0_15px_rgba(56,189,248,0.5)]">
+        <svg className="w-full h-full transform -rotate-90 drop-shadow-[0_0_18px_rgba(245,158,11,0.45)]">
           {/* Background Track */}
           <circle
             cx="88"
             cy="88"
             r={radius}
-            className="stroke-slate-800"
+            className="stroke-stone-800"
             strokeWidth="10"
             fill="transparent"
           />
-          {/* Animated Neon Arc */}
+          {/* Animated Warm Arc */}
           <circle
             cx="88"
             cy="88"
@@ -71,26 +71,26 @@ function GlowingCircularProgress({ value, speedBps, etaSeconds }) {
           />
           <defs>
             <linearGradient id="progressGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#a855f7" />
-              <stop offset="50%" stopColor="#38bdf8" />
-              <stop offset="100%" stopColor="#34d399" />
+              <stop offset="0%" stopColor="#f59e0b" />
+              <stop offset="50%" stopColor="#fb7185" />
+              <stop offset="100%" stopColor="#f97316" />
             </linearGradient>
           </defs>
         </svg>
 
         {/* Center Percentage Display */}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-          <span className="font-display text-3xl font-extrabold bg-gradient-to-r from-violet-400 via-cyan-300 to-emerald-300 bg-clip-text text-transparent">
+          <span className="font-display text-3xl font-extrabold bg-gradient-to-r from-amber-400 via-rose-400 to-orange-400 bg-clip-text text-transparent">
             {value}%
           </span>
-          <span className="text-[11px] font-semibold tracking-wider text-cyan-400 uppercase mt-0.5">
+          <span className="text-[11px] font-semibold tracking-wider text-amber-400 uppercase mt-0.5">
             {formatSpeed(speedBps)}
           </span>
         </div>
       </div>
 
-      <div className="mt-3 text-xs font-medium text-slate-400 bg-slate-900/60 px-3 py-1 rounded-full border border-slate-700/60 shadow-inner">
-        ⏱️ ETA: <span className="text-slate-200 font-semibold">{formatEta(etaSeconds)}</span>
+      <div className="mt-3 text-xs font-medium text-stone-400 bg-stone-900/60 px-3 py-1 rounded-full border border-stone-700/60 shadow-inner">
+        ETA: <span className="text-stone-200 font-semibold">{formatEta(etaSeconds)}</span>
       </div>
     </div>
   );
@@ -113,9 +113,23 @@ function MuteToggle() {
     <button
       onClick={toggle}
       aria-label={muted ? "Unmute sounds" : "Mute sounds"}
-      className="fixed top-5 right-5 w-10 h-10 rounded-2xl bg-slate-900/80 border border-slate-700/60 shadow-lg flex items-center justify-center text-slate-300 hover:text-white hover:border-cyan-500/50 hover:scale-105 transition-all z-50 backdrop-blur-xl"
+      className="fixed top-5 right-5 w-10 h-10 rounded-2xl bg-stone-900/80 border border-stone-700/60 shadow-lg flex items-center justify-center text-stone-300 hover:text-white hover:border-amber-500/50 hover:scale-105 transition-all z-50 backdrop-blur-xl"
     >
-      {muted ? "🔇" : "🔊"}
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+        {muted ? (
+          <>
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+            <line x1="23" y1="9" x2="17" y2="15" />
+            <line x1="17" y1="9" x2="23" y2="15" />
+          </>
+        ) : (
+          <>
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+          </>
+        )}
+      </svg>
     </button>
   );
 }
@@ -159,15 +173,14 @@ export default function Home() {
     }
   }, []);
 
-  // Trigger confetti burst on completion
   useEffect(() => {
     if (status === "done") {
       import("canvas-confetti").then(({ default: confetti }) => {
         confetti({
-          particleCount: 80,
-          spread: 70,
+          particleCount: 90,
+          spread: 75,
           origin: { y: 0.6 },
-          colors: ["#a855f7", "#38bdf8", "#34d399", "#f43f5e"],
+          colors: ["#f59e0b", "#fb7185", "#f97316", "#fbbf24"],
         });
       }).catch(() => {});
     }
@@ -205,7 +218,7 @@ export default function Home() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      // fallback copy
+      // fallback
     }
   }, [code]);
 
@@ -244,35 +257,33 @@ export default function Home() {
 
   const shareUrl = siteOrigin && code ? `${siteOrigin}/?code=${code}` : "";
   const qrUrl = shareUrl
-    ? `https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=8&data=${encodeURIComponent(
-        shareUrl
-      )}`
+    ? `https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=8&data=${encodeURIComponent(shareUrl)}`
     : "";
 
   const totalSelectedSize = selectedFiles.reduce((acc, f) => acc + f.size, 0);
 
   return (
-    <main className="relative min-h-screen flex flex-col items-center justify-between px-4 py-10 selection:bg-cyan-500 selection:text-black">
-      {/* 3D WebGL Hyperspace Particle Tunnel Background */}
+    <main className="relative min-h-screen flex flex-col items-center justify-between px-4 py-10 selection:bg-amber-500 selection:text-black">
+      {/* 3D Warm Particle Background */}
       <WarpBackground3D speeding={status === "transferring"} active={busy} />
       <MuteToggle />
 
       <div className="relative z-10 w-full max-w-xl flex flex-col items-center">
         {/* Brand Header */}
         <header className="flex flex-col items-center text-center mb-8">
-          <div className="flex items-center gap-3 mb-3">
+          <div className="flex items-center gap-3 mb-3 animate-float">
             <Logo size={46} />
-            <h1 className="font-display text-4xl md:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-violet-400 via-cyan-300 to-teal-300 bg-clip-text text-transparent drop-shadow-[0_0_25px_rgba(168,85,247,0.5)]">
+            <h1 className="font-display text-4xl md:text-5xl font-extrabold tracking-tight shimmer-text drop-shadow-[0_0_30px_rgba(245,158,11,0.4)]">
               Warp 3D
             </h1>
           </div>
-          <p className="text-slate-400 text-sm md:text-base max-w-md font-medium">
-            Ultra-fast browser-to-browser P2P file portal. Encrypted, zero servers, infinite size.
+          <p className="text-stone-400 text-sm md:text-base max-w-md font-medium">
+            Browser-to-browser file transfer. Encrypted, zero servers, no limits.
           </p>
         </header>
 
         {/* Mode Selector Tabs */}
-        <div className="flex p-1.5 rounded-2xl bg-slate-900/80 border border-slate-700/60 backdrop-blur-xl mb-6 shadow-2xl">
+        <div className="flex p-1.5 rounded-2xl bg-stone-900/80 border border-stone-700/50 backdrop-blur-xl mb-6 shadow-2xl border-pulse">
           {["send", "receive"].map((t) => (
             <button
               key={t}
@@ -284,11 +295,11 @@ export default function Home() {
               }}
               className={`px-8 py-2.5 rounded-xl text-xs md:text-sm font-bold uppercase tracking-wider transition-all duration-300 ${
                 tab === t
-                  ? "bg-gradient-to-r from-violet-600 via-cyan-600 to-teal-500 text-white shadow-[0_0_20px_rgba(6,182,212,0.5)]"
-                  : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
+                  ? "bg-gradient-to-r from-amber-500 via-rose-500 to-orange-500 text-white shadow-[0_0_22px_rgba(245,158,11,0.5)]"
+                  : "text-stone-400 hover:text-stone-200 hover:bg-stone-800/40"
               } ${busy && status !== "error" ? "opacity-40 cursor-not-allowed" : ""}`}
             >
-              {t === "send" ? "⚡ Send Files" : "📥 Receive Files"}
+              {t === "send" ? "Send Files" : "Receive Files"}
             </button>
           ))}
         </div>
@@ -298,10 +309,10 @@ export default function Home() {
           {/* Realtime P2P Node Link Diagram */}
           <NodeP2PGraph3D role={role || tab} status={status} speedBps={speedBps} />
 
-          {/* Dynamic Telemetry Status Banner */}
+          {/* Status Banner */}
           {statusText && (
-            <div className="mb-5 px-4 py-2 rounded-xl bg-cyan-950/40 border border-cyan-500/30 text-center text-xs font-semibold text-cyan-300 flex items-center justify-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
+            <div className="mb-5 px-4 py-2 rounded-xl bg-amber-950/40 border border-amber-500/30 text-center text-xs font-semibold text-amber-300 flex items-center justify-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
               {statusText}
             </div>
           )}
@@ -322,18 +333,22 @@ export default function Home() {
                     onClick={() => fileInputRef.current?.click()}
                     className={`group cursor-pointer rounded-2xl border-2 border-dashed p-8 md:p-10 text-center transition-all duration-300 flex flex-col items-center justify-center ${
                       dragOver
-                        ? "border-cyan-400 bg-cyan-950/40 scale-[1.02]"
-                        : "border-slate-700/80 bg-slate-900/40 hover:border-cyan-500/60 hover:bg-slate-900/70"
+                        ? "border-amber-400 bg-amber-950/30 scale-[1.02]"
+                        : "border-stone-700/80 bg-stone-900/30 hover:border-amber-500/60 hover:bg-stone-900/60"
                     }`}
                   >
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-violet-600/30 to-cyan-500/30 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                      <span className="text-3xl">📁</span>
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-600/25 to-rose-500/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform border border-amber-500/20">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8 text-amber-400">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="17 8 12 3 7 8" />
+                        <line x1="12" y1="3" x2="12" y2="15" />
+                      </svg>
                     </div>
-                    <p className="text-slate-200 font-bold text-base md:text-lg mb-1">
-                      Drag & Drop files here
+                    <p className="text-stone-200 font-bold text-base md:text-lg mb-1">
+                      Drop files here
                     </p>
-                    <p className="text-slate-400 text-xs md:text-sm">
-                      or click to browse from device (multiple files supported)
+                    <p className="text-stone-400 text-xs md:text-sm">
+                      or click to browse from device — multiple files supported
                     </p>
                     <input
                       ref={fileInputRef}
@@ -344,10 +359,10 @@ export default function Home() {
                     />
                   </div>
 
-                  {/* Selected File List Queue */}
+                  {/* Selected File List */}
                   {selectedFiles.length > 0 && (
                     <div className="flex flex-col gap-2 mt-2">
-                      <div className="flex items-center justify-between text-xs text-slate-400 font-medium px-1">
+                      <div className="flex items-center justify-between text-xs text-stone-400 font-medium px-1">
                         <span>Selected ({selectedFiles.length} files)</span>
                         <span>Total: {formatBytes(totalSelectedSize)}</span>
                       </div>
@@ -355,21 +370,24 @@ export default function Home() {
                         {selectedFiles.map((file, i) => (
                           <div
                             key={i}
-                            className="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-slate-900/80 border border-slate-800 text-xs"
+                            className="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-stone-900/80 border border-stone-800 text-xs"
                           >
                             <div className="flex items-center gap-2 truncate pr-2">
-                              <span className="text-base">📄</span>
-                              <span className="text-slate-200 font-medium truncate">
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-amber-400 shrink-0">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                <polyline points="14 2 14 8 20 8" />
+                              </svg>
+                              <span className="text-stone-200 font-medium truncate">
                                 {file.name}
                               </span>
                             </div>
                             <div className="flex items-center gap-3 shrink-0">
-                              <span className="text-slate-400 text-[11px]">
+                              <span className="text-stone-400 text-[11px]">
                                 {formatBytes(file.size)}
                               </span>
                               <button
                                 onClick={() => removeFile(i)}
-                                className="text-slate-500 hover:text-red-400 text-base font-bold transition-colors"
+                                className="text-stone-500 hover:text-rose-400 text-base font-bold transition-colors w-5 h-5 flex items-center justify-center"
                               >
                                 ×
                               </button>
@@ -380,9 +398,13 @@ export default function Home() {
 
                       <button
                         onClick={handleStartSending}
-                        className="w-full mt-3 py-3.5 rounded-2xl bg-gradient-to-r from-violet-600 via-cyan-500 to-teal-400 text-white font-bold text-sm glow-button shadow-xl flex items-center justify-center gap-2"
+                        className="w-full mt-3 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-rose-500 to-orange-500 text-white font-bold text-sm glow-button shadow-xl flex items-center justify-center gap-2"
                       >
-                        🚀 Initialize P2P Warp Stream
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+                          <line x1="22" y1="2" x2="11" y2="13" />
+                          <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                        </svg>
+                        Start Transfer
                       </button>
                     </div>
                   )}
@@ -391,58 +413,62 @@ export default function Home() {
 
               {status === "waiting" && (
                 <div className="text-center py-4 flex flex-col items-center">
-                  <p className="text-slate-400 text-xs uppercase tracking-widest font-semibold mb-2">
+                  <p className="text-stone-400 text-xs uppercase tracking-widest font-semibold mb-2">
                     Pairing Code
                   </p>
-                  <div className="code-char text-5xl md:text-6xl font-extrabold tracking-widest bg-gradient-to-r from-violet-400 via-cyan-300 to-teal-300 bg-clip-text text-transparent glow-text-cyan my-3">
+                  <div className="code-char text-5xl md:text-6xl font-extrabold tracking-widest bg-gradient-to-r from-amber-400 via-rose-400 to-orange-400 bg-clip-text text-transparent glow-text-amber my-3">
                     {code}
                   </div>
 
                   <div className="flex gap-2 mb-6">
                     <button
                       onClick={copyCode}
-                      className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-bold transition-all shadow-md"
+                      className="px-5 py-2.5 rounded-xl bg-stone-800 hover:bg-stone-700 border border-stone-700 text-stone-200 text-xs font-bold transition-all shadow-md"
                     >
-                      {copied ? "Copied Code ✓" : "Copy Code"}
+                      {copied ? "Copied" : "Copy Code"}
                     </button>
                     <button
                       onClick={copyShareLink}
-                      className="px-5 py-2.5 rounded-xl bg-cyan-950/60 hover:bg-cyan-900/60 border border-cyan-500/40 text-cyan-300 text-xs font-bold transition-all shadow-md"
+                      className="px-5 py-2.5 rounded-xl bg-amber-950/60 hover:bg-amber-900/60 border border-amber-500/40 text-amber-300 text-xs font-bold transition-all shadow-md flex items-center gap-1.5"
                     >
-                      🔗 Copy Direct Link
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3">
+                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                      </svg>
+                      Copy Link
                     </button>
                   </div>
 
                   {qrUrl && (
-                    <div className="flex flex-col items-center p-4 rounded-2xl bg-slate-900/80 border border-slate-800 mb-4 shadow-2xl">
+                    <div className="flex flex-col items-center p-4 rounded-2xl bg-stone-900/80 border border-stone-800 mb-4 shadow-2xl">
                       <Image
                         src={qrUrl}
                         alt="QR Code"
                         width={150}
                         height={150}
                         unoptimized
-                        className="rounded-xl border border-slate-700"
+                        className="rounded-xl border border-stone-700"
                       />
-                      <p className="text-slate-400 text-[11px] mt-2.5 font-medium">
-                        Scan with camera to auto-connect mobile browser
+                      <p className="text-stone-400 text-[11px] mt-2.5 font-medium">
+                        Scan to connect from mobile browser
                       </p>
                     </div>
                   )}
 
-                  <div className="flex items-center gap-2 text-slate-400 text-xs animate-pulse font-medium">
-                    <span className="w-2 h-2 rounded-full bg-cyan-400" />
-                    {reconnecting ? "Re-establishing signal..." : "Listening for incoming receiver..."}
+                  <div className="flex items-center gap-2 text-stone-400 text-xs animate-pulse font-medium">
+                    <span className="w-2 h-2 rounded-full bg-amber-400" />
+                    {reconnecting ? "Re-establishing signal..." : "Waiting for receiver..."}
                   </div>
                 </div>
               )}
 
               {(status === "connected" || status === "transferring") && (
                 <div className="flex flex-col items-center">
-                  <p className="text-slate-300 font-bold text-sm text-center truncate max-w-xs mb-1">
+                  <p className="text-stone-300 font-bold text-sm text-center truncate max-w-xs mb-1">
                     Sending {fileMeta?.name || "Files"}
                   </p>
                   {fileMeta?.total > 1 && (
-                    <span className="text-slate-400 text-xs font-medium">
+                    <span className="text-stone-400 text-xs font-medium">
                       File {fileMeta.index + 1} of {fileMeta.total}
                     </span>
                   )}
@@ -456,21 +482,23 @@ export default function Home() {
 
               {status === "done" && (
                 <div className="text-center py-6">
-                  <div className="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center mx-auto mb-3 text-3xl">
-                    ✓
+                  <div className="w-16 h-16 rounded-full bg-amber-500/15 border border-amber-400/40 flex items-center justify-center mx-auto mb-3">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7 text-amber-400">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
                   </div>
-                  <h3 className="text-emerald-400 font-bold text-xl mb-1">
-                    Transfer Completed!
+                  <h3 className="text-amber-400 font-bold text-xl mb-1">
+                    Transfer Complete
                   </h3>
-                  <p className="text-slate-400 text-xs mb-6">
-                    All files delivered directly over encrypted P2P stream.
+                  <p className="text-stone-400 text-xs mb-6">
+                    All files delivered over encrypted P2P stream.
                   </p>
                   <button
                     onClick={() => {
                       reset();
                       setSelectedFiles([]);
                     }}
-                    className="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-bold transition-all shadow-lg"
+                    className="px-6 py-3 rounded-xl bg-stone-800 hover:bg-stone-700 border border-stone-700 text-stone-200 text-xs font-bold transition-all shadow-lg"
                   >
                     Send More Files
                   </button>
@@ -479,13 +507,16 @@ export default function Home() {
 
               {status === "error" && (
                 <div className="text-center py-6">
-                  <div className="w-14 h-14 rounded-full bg-rose-500/20 border border-rose-400/40 flex items-center justify-center mx-auto mb-3 text-2xl text-rose-400">
-                    ✕
+                  <div className="w-14 h-14 rounded-full bg-rose-500/15 border border-rose-400/40 flex items-center justify-center mx-auto mb-3">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 text-rose-400">
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
                   </div>
                   <h3 className="text-rose-400 font-bold text-lg mb-1">
                     Connection Issue
                   </h3>
-                  <p className="text-slate-400 text-xs mb-6 max-w-xs mx-auto">
+                  <p className="text-stone-400 text-xs mb-6 max-w-xs mx-auto">
                     {errorMsg || "Could not complete transfer."}
                   </p>
                   <button
@@ -493,7 +524,7 @@ export default function Home() {
                       reset();
                       setSelectedFiles([]);
                     }}
-                    className="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-bold transition-all"
+                    className="px-6 py-3 rounded-xl bg-stone-800 hover:bg-stone-700 border border-stone-700 text-stone-200 text-xs font-bold transition-all"
                   >
                     Try Again
                   </button>
@@ -507,7 +538,7 @@ export default function Home() {
             <>
               {status === "idle" && (
                 <div className="flex flex-col gap-4 py-2">
-                  <p className="text-slate-300 text-xs font-bold text-center uppercase tracking-widest">
+                  <p className="text-stone-300 text-xs font-bold text-center uppercase tracking-widest">
                     Enter Sender Code
                   </p>
                   <input
@@ -515,28 +546,42 @@ export default function Home() {
                     onChange={(e) => setInputCode(e.target.value.toLowerCase())}
                     placeholder="e.g. h4k9zq"
                     maxLength={6}
-                    className="code-char w-full text-center text-3xl font-extrabold tracking-widest glass-input rounded-2xl py-4 text-cyan-300 outline-none transition-all placeholder:text-slate-600"
+                    className="code-char w-full text-center text-3xl font-extrabold tracking-widest glass-input rounded-2xl py-4 text-amber-300 outline-none transition-all placeholder:text-stone-700"
                   />
                   <button
                     disabled={inputCode.trim().length < 4}
                     onClick={() => startReceiving(inputCode)}
-                    className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-violet-600 via-cyan-500 to-teal-400 text-white font-bold text-sm glow-button disabled:opacity-30 disabled:cursor-not-allowed transition-opacity shadow-xl"
+                    className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-rose-500 to-orange-500 text-white font-bold text-sm glow-button disabled:opacity-30 disabled:cursor-not-allowed transition-opacity shadow-xl flex items-center justify-center gap-2"
                   >
-                    ⚡ Connect & Download
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+                      <path d="M5 12h14" />
+                      <path d="M12 5l7 7-7 7" />
+                    </svg>
+                    Connect and Download
                   </button>
                   <button
                     onClick={() => setScannerOpen(true)}
-                    className="w-full py-3 rounded-2xl bg-slate-900/80 border border-slate-800 hover:bg-slate-800 text-slate-300 text-xs font-semibold transition-all flex items-center justify-center gap-2"
+                    className="w-full py-3 rounded-2xl bg-stone-900/80 border border-stone-800 hover:bg-stone-800 text-stone-300 text-xs font-semibold transition-all flex items-center justify-center gap-2"
                   >
-                    📷 Scan QR Code
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+                      <polyline points="23 7 23 1 17 1" />
+                      <line x1="16" y1="8" x2="23" y2="1" />
+                      <polyline points="1 17 1 23 7 23" />
+                      <line x1="8" y1="16" x2="1" y2="23" />
+                      <polyline points="23 17 23 23 17 23" />
+                      <line x1="16" y1="16" x2="23" y2="23" />
+                      <polyline points="1 7 1 1 7 1" />
+                      <line x1="8" y1="8" x2="1" y2="1" />
+                    </svg>
+                    Scan QR Code
                   </button>
                 </div>
               )}
 
               {status === "connecting" && (
                 <div className="text-center py-8">
-                  <div className="w-12 h-12 rounded-full border-4 border-cyan-400/30 border-t-cyan-400 animate-spin mx-auto mb-4" />
-                  <p className="text-slate-300 text-sm font-semibold animate-pulse">
+                  <div className="w-12 h-12 rounded-full border-4 border-amber-400/30 border-t-amber-400 animate-spin mx-auto mb-4" />
+                  <p className="text-stone-300 text-sm font-semibold animate-pulse">
                     Connecting to sender node...
                   </p>
                 </div>
@@ -544,7 +589,7 @@ export default function Home() {
 
               {(status === "connected" || status === "transferring") && (
                 <div className="flex flex-col items-center">
-                  <p className="text-slate-300 font-bold text-sm text-center truncate max-w-xs mb-1">
+                  <p className="text-stone-300 font-bold text-sm text-center truncate max-w-xs mb-1">
                     Receiving {fileMeta?.name || "File"}
                   </p>
                   <GlowingCircularProgress
@@ -557,22 +602,24 @@ export default function Home() {
 
               {status === "done" && (
                 <div className="text-center py-6">
-                  <div className="w-16 h-16 rounded-full bg-teal-500/20 border border-teal-400/40 flex items-center justify-center mx-auto mb-3 text-3xl">
-                    ✓
+                  <div className="w-16 h-16 rounded-full bg-amber-500/15 border border-amber-400/40 flex items-center justify-center mx-auto mb-3">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7 text-amber-400">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
                   </div>
-                  <h3 className="text-teal-400 font-bold text-xl mb-1">
-                    Received Successfully!
+                  <h3 className="text-amber-400 font-bold text-xl mb-1">
+                    Received Successfully
                   </h3>
-                  <p className="text-slate-400 text-xs mb-4">
-                    {receivedFiles.length} file(s) delivered directly to browser.
+                  <p className="text-stone-400 text-xs mb-4">
+                    {receivedFiles.length} file(s) ready to save.
                   </p>
 
                   {receivedFiles.length > 1 && (
                     <button
                       onClick={() => downloadAll(receivedFiles)}
-                      className="w-full py-3 mb-3 rounded-xl bg-gradient-to-r from-violet-600 to-teal-400 text-white text-xs font-bold glow-button shadow-lg"
+                      className="w-full py-3 mb-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold glow-button shadow-lg"
                     >
-                      Download All ({receivedFiles.length} Files)
+                      Save All ({receivedFiles.length} Files)
                     </button>
                   )}
 
@@ -582,13 +629,18 @@ export default function Home() {
                         key={i}
                         href={f.url}
                         download={f.name}
-                        className="flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-cyan-400/50 transition-all text-left group"
+                        className="flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-stone-900/90 border border-stone-800 hover:border-amber-400/50 transition-all text-left group"
                       >
-                        <span className="text-slate-200 text-xs font-medium truncate group-hover:text-cyan-300">
+                        <span className="text-stone-200 text-xs font-medium truncate group-hover:text-amber-300">
                           {f.name}
                         </span>
-                        <span className="text-cyan-400 text-[11px] font-semibold whitespace-nowrap bg-cyan-950/60 px-2.5 py-1 rounded-lg border border-cyan-500/30">
-                          {formatBytes(f.size)} · Save ⬇
+                        <span className="text-amber-400 text-[11px] font-semibold whitespace-nowrap bg-amber-950/60 px-2.5 py-1 rounded-lg border border-amber-500/30 flex items-center gap-1">
+                          {formatBytes(f.size)}
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="7 10 12 15 17 10" />
+                            <line x1="12" y1="15" x2="12" y2="3" />
+                          </svg>
                         </span>
                       </a>
                     ))}
@@ -596,7 +648,7 @@ export default function Home() {
 
                   <button
                     onClick={reset}
-                    className="text-slate-400 hover:text-slate-200 text-xs font-medium transition-colors"
+                    className="text-stone-400 hover:text-stone-200 text-xs font-medium transition-colors"
                   >
                     Receive More Files
                   </button>
@@ -605,18 +657,21 @@ export default function Home() {
 
               {status === "error" && (
                 <div className="text-center py-6">
-                  <div className="w-14 h-14 rounded-full bg-rose-500/20 border border-rose-400/40 flex items-center justify-center mx-auto mb-3 text-2xl text-rose-400">
-                    ✕
+                  <div className="w-14 h-14 rounded-full bg-rose-500/15 border border-rose-400/40 flex items-center justify-center mx-auto mb-3">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 text-rose-400">
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
                   </div>
                   <h3 className="text-rose-400 font-bold text-lg mb-1">
                     Connection Failed
                   </h3>
-                  <p className="text-slate-400 text-xs mb-6 max-w-xs mx-auto">
-                    {errorMsg || "Ensure sender tab is active and code is typed accurately."}
+                  <p className="text-stone-400 text-xs mb-6 max-w-xs mx-auto">
+                    {errorMsg || "Make sure sender tab is open and code is correct."}
                   </p>
                   <button
                     onClick={reset}
-                    className="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-bold transition-all"
+                    className="px-6 py-3 rounded-xl bg-stone-800 hover:bg-stone-700 border border-stone-700 text-stone-200 text-xs font-bold transition-all"
                   >
                     Try Again
                   </button>
@@ -627,27 +682,33 @@ export default function Home() {
         </TiltCard3D>
       </div>
 
-      {/* Footer Info */}
-      <footer className="relative z-10 mt-10 text-slate-500 text-xs flex flex-col sm:flex-row items-center gap-3">
-        <span>🔒 Direct Encrypted WebRTC Stream — No File Storage</span>
-        <span className="hidden sm:inline">•</span>
+      {/* Footer */}
+      <footer className="relative z-10 mt-10 text-stone-500 text-xs flex flex-col sm:flex-row items-center gap-3">
+        <span className="flex items-center gap-1.5">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
+          Direct Encrypted WebRTC — No File Storage
+        </span>
+        <span className="hidden sm:inline">·</span>
         <span>
           Built by{" "}
           <a
             href="https://asad-lee-portfolio.vercel.app"
-            className="text-cyan-400 hover:underline font-semibold"
+            className="text-amber-400 hover:underline font-semibold"
             target="_blank"
             rel="noreferrer"
           >
             Asad Lee
           </a>
         </span>
-        <span className="hidden sm:inline">•</span>
+        <span className="hidden sm:inline">·</span>
         <a
           href="https://www.instagram.com/asadleeafridi?igsh=bDRmMGd1c3o1NzBl&utm_source=qr"
           target="_blank"
           rel="noreferrer"
-          className="text-slate-400 hover:text-slate-200 font-medium"
+          className="text-stone-400 hover:text-stone-200 font-medium"
         >
           Instagram
         </a>

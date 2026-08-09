@@ -18,8 +18,8 @@ export default function TiltCard3D({ children, className = "" }) {
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
 
-    const rotateX = ((y - centerY) / centerY) * -7; // Deg X
-    const rotateY = ((x - centerX) / centerX) * 7; // Deg Y
+    const rotateX = ((y - centerY) / centerY) * -7;
+    const rotateY = ((x - centerX) / centerX) * 7;
 
     const glowX = (x / rect.width) * 100;
     const glowY = (y / rect.height) * 100;
@@ -49,18 +49,18 @@ export default function TiltCard3D({ children, className = "" }) {
         transition: "transform 0.15s ease-out",
         transformStyle: "preserve-3d",
       }}
-      className={`relative overflow-hidden rounded-3xl border border-white/15 bg-white/5 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] ${className}`}
+      className={`relative overflow-hidden rounded-3xl border border-amber-900/30 bg-stone-950/60 backdrop-blur-2xl shadow-[0_25px_55px_rgba(0,0,0,0.6)] ${className}`}
     >
-      {/* Dynamic Cursor Light Reflection */}
+      {/* Warm Cursor Light Reflection */}
       <div
-        className="pointer-events-none absolute -inset-px transition-opacity duration-300 opacity-60"
+        className="pointer-events-none absolute -inset-px transition-opacity duration-300 opacity-50"
         style={{
-          background: `radial-gradient(600px circle at ${style.glowX}% ${style.glowY}%, rgba(168, 85, 247, 0.25), rgba(6, 182, 212, 0.15) 40%, transparent 80%)`,
+          background: `radial-gradient(600px circle at ${style.glowX}% ${style.glowY}%, rgba(245, 158, 11, 0.2), rgba(251, 113, 133, 0.1) 40%, transparent 80%)`,
         }}
       />
-      {/* Top Border Light Streak */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent" />
-      
+      {/* Top Border Glow */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-500/50 to-transparent" />
+
       <div className="relative z-10">{children}</div>
     </div>
   );
