@@ -543,9 +543,17 @@ export default function Home() {
                   </p>
                   <input
                     value={inputCode}
-                    onChange={(e) => setInputCode(e.target.value.toLowerCase())}
+                    onChange={(e) => {
+                      let val = e.target.value.trim();
+                      try {
+                        if (val.includes("code=")) {
+                          const url = new URL(val.startsWith("http") ? val : `http://${val}`);
+                          val = url.searchParams.get("code") || val;
+                        }
+                      } catch {}
+                      setInputCode(val.toLowerCase());
+                    }}
                     placeholder="e.g. h4k9zq"
-                    maxLength={6}
                     className="code-char w-full text-center text-3xl font-extrabold tracking-widest glass-input rounded-2xl py-4 text-amber-300 outline-none transition-all placeholder:text-stone-700"
                   />
                   <button
