@@ -455,6 +455,10 @@ export default function Home() {
                     </div>
                   )}
 
+                  <p className="text-[11px] text-amber-300/80 bg-amber-950/40 border border-amber-500/20 px-3.5 py-1.5 rounded-xl mb-3 max-w-sm text-center">
+                    Keep this tab open & active until the receiver finishes connecting.
+                  </p>
+
                   <div className="flex items-center gap-2 text-stone-400 text-xs animate-pulse font-medium">
                     <span className="w-2 h-2 rounded-full bg-amber-400" />
                     {reconnecting ? "Re-establishing signal..." : "Listening for incoming receiver..."}
