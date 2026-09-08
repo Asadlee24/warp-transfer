@@ -417,8 +417,8 @@ export default function Home() {
                   <p className="text-stone-400 text-xs uppercase tracking-widest font-semibold mb-2">
                     Pairing Code
                   </p>
-                  <div className="code-char text-5xl md:text-6xl font-extrabold tracking-widest bg-gradient-to-r from-amber-400 via-rose-400 to-orange-400 bg-clip-text text-transparent glow-text-amber my-3">
-                    {code}
+                  <div className="code-char text-5xl md:text-6xl font-extrabold tracking-widest bg-gradient-to-r from-amber-400 via-rose-400 to-orange-400 bg-clip-text text-transparent glow-text-amber my-3 select-all">
+                    {code && code.length === 6 ? `${code.slice(0, 3)} ${code.slice(3)}` : code}
                   </div>
 
                   <div className="flex gap-2 mb-6">
@@ -544,9 +544,13 @@ export default function Home() {
               {status === "idle" && (
                 <div className="flex flex-col gap-4 py-2">
                   <p className="text-stone-300 text-xs font-bold text-center uppercase tracking-widest">
-                    Enter Sender Code
+                    Enter 6-Digit Transfer PIN
                   </p>
                   <input
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    maxLength={6}
                     value={inputCode}
                     onChange={(e) => {
                       let val = e.target.value;
@@ -556,11 +560,11 @@ export default function Home() {
                           val = url.searchParams.get("code") || val;
                         }
                       } catch {}
-                      val = val.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+                      val = val.replace(/[^0-9]/g, "");
                       setInputCode(val);
                     }}
                     onKeyDown={(e) => {
-                      if (e.key === "Enter" && inputCode.trim().length >= 4 && status === "idle") {
+                      if (e.key === "Enter" && inputCode.trim().length >= 6 && status === "idle") {
                         startReceiving(inputCode);
                       }
                     }}
@@ -568,11 +572,11 @@ export default function Home() {
                     autoCorrect="off"
                     autoComplete="off"
                     spellCheck={false}
-                    placeholder="e.g. 4k9zqa"
-                    className="code-char w-full text-center text-3xl font-extrabold tracking-widest glass-input rounded-2xl py-4 text-amber-300 outline-none transition-all placeholder:text-stone-700"
+                    placeholder="e.g. 482915"
+                    className="code-char w-full text-center text-4xl font-extrabold tracking-widest glass-input rounded-2xl py-4 text-amber-300 outline-none transition-all placeholder:text-stone-700"
                   />
                   <button
-                    disabled={inputCode.trim().length < 4}
+                    disabled={inputCode.trim().length < 6}
                     onClick={() => startReceiving(inputCode)}
                     className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-rose-500 to-orange-500 text-white font-bold text-sm glow-button disabled:opacity-30 disabled:cursor-not-allowed transition-opacity shadow-xl flex items-center justify-center gap-2"
                   >
