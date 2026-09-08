@@ -170,8 +170,9 @@ export default function Home() {
       autoConnectedRef.current = true;
       setTab("receive");
       setInputCode(codeFromLink);
+      startReceiving(codeFromLink);
     }
-  }, []);
+  }, [startReceiving]);
 
   useEffect(() => {
     if (status === "done") {
@@ -548,16 +549,26 @@ export default function Home() {
                   <input
                     value={inputCode}
                     onChange={(e) => {
-                      let val = e.target.value.trim();
+                      let val = e.target.value;
                       try {
                         if (val.includes("code=")) {
                           const url = new URL(val.startsWith("http") ? val : `http://${val}`);
                           val = url.searchParams.get("code") || val;
                         }
                       } catch {}
-                      setInputCode(val.toLowerCase());
+                      val = val.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+                      setInputCode(val);
                     }}
-                    placeholder="e.g. h4k9zq"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && inputCode.trim().length >= 4 && status === "idle") {
+                        startReceiving(inputCode);
+                      }
+                    }}
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    autoComplete="off"
+                    spellCheck={false}
+                    placeholder="e.g. 4k9zqa"
                     className="code-char w-full text-center text-3xl font-extrabold tracking-widest glass-input rounded-2xl py-4 text-amber-300 outline-none transition-all placeholder:text-stone-700"
                   />
                   <button
@@ -591,11 +602,17 @@ export default function Home() {
               )}
 
               {status === "connecting" && (
-                <div className="text-center py-8">
+                <div className="text-center py-8 flex flex-col items-center">
                   <div className="w-12 h-12 rounded-full border-4 border-amber-400/30 border-t-amber-400 animate-spin mx-auto mb-4" />
-                  <p className="text-stone-300 text-sm font-semibold animate-pulse">
+                  <p className="text-stone-300 text-sm font-semibold animate-pulse mb-4">
                     Connecting to sender node...
                   </p>
+                  <button
+                    onClick={() => reset()}
+                    className="px-4 py-2 rounded-xl bg-stone-800 hover:bg-stone-700 border border-stone-700 text-stone-400 text-xs font-semibold transition-all"
+                  >
+                    Cancel & Re-enter Code
+                  </button>
                 </div>
               )}
 
